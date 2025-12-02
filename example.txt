@@ -1,0 +1,57 @@
+This is a design for a software component (containing multiple sub-components) that computes the difference
+in days between two dates (days_between_dates).
+
+days_between_dates(date1, date2):
+    if date1 is in the same year as date2:
+        return days_between_dates_in_year(date1, date2)
+    
+    otherwise:
+        answer = days_between_dates_in_year(date1, December 31 of same year as date1)
+        answer = answer + 1 # To get to January 1 of the next year
+        for each year y between date1 and date2 (exclusive):
+            answer = answer + number_of_days_in_year(y)
+        answer = answer + days_between_dates_in_year(January 1 of same year as date2, date2)
+        return answer
+
+number_of_days_in_year(y):
+    if is_leap_year(y):
+        return 366
+    otherwise:
+        return 365
+
+is_leap_year(y):
+    # A leap year occurs every year that's a multiple of 4,
+    # except for years that are divisible by 100 but not 400.
+    # (Yes, this is a true fact. See the below reference.)
+    # https://en.wikipedia.org/wiki/Leap_year
+
+    if y is divisible by 4:
+        if y is divisible by 100 and y is not divisible by 400:
+            return false
+        otherwise:
+            return true
+    otherwise:
+        return false # Not divisible by 4
+
+days_between_dates_in_year(date1, date2):
+    if date1's month is the same as date2's month:
+        return date2's day - date1's day
+    otherwise:
+        answer = days_in_month(date1's month) - date1's day # To get to the end of date1's month
+        answer = answer + 1 # To get to the first of the NEXT month
+        for each month m between date1 and date2 (exclusive):
+            answer = answer + days_in_month(m, date1's year) # To get past month m
+        answer = answer + date2's day - 1 # To get to date2's day
+
+days_in_month(m, y):
+    if m is in ['Sep', 'Apr', 'June', 'Nov']:
+        return 30 # These months all have 30 days
+    otherwise if m is NOT 'Feb':
+        return 31 # These months all have 31 days
+    otherwise:
+        # m must be February. If it's a leap year, it has 29 days.
+        # Otherwise, it has 28 days.
+        if is_leap_year(y):
+            return 29
+        otherwise:
+            return 28

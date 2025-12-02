@@ -1,0 +1,147 @@
+This is the design document for an in terminal word guessing game based on
+NYT's Wordle. 
+
+to run this game cd into the wordle directory and then type:
+"python main.py"
+
+Game:
+    target_word = Word(dict_word())
+    attempts = 0
+    
+    game_loop()
+        while attempts < 6
+            prompt user "enter a 5 letter word"
+            guess = user input
+
+            if not is_word(guess)
+                print "not a valid word"
+                continue # go to next loop iteration without updating attempt
+
+            user_word = Word(guess)
+        
+            word_match = compare_word(user_word, target_word)
+            # compares the user's guess with the target word
+            # creates word_match, a list of checked_letters.
+        
+            output_msg = output_graphic(word_match)
+            print output_msg
+
+            if win(word_match):
+                print "you win!"
+                end the game
+        
+            attempts = attempts + 1
+            update_letters_remaining(word_match)
+            
+            print letters eliminated
+            print letters remaining
+            print attempts remaining
+
+        # if we get to here the player did not guess correctly in 6 tries
+        print "you lose."
+        print "The word was:", target_word.get_text()
+
+# data types:
+
+Word:
+    text        # the word as a string
+    letter_list # list of letters in the word
+
+    constructor(t):
+        text = t
+        split_word(text)
+
+    split_word(text):
+        letter_list = empty list
+        for each letter c in text:
+            append c to letter_list
+
+    contains_letter(letter)
+        for each c in letter_list:
+            if c == letter:
+                return true
+        return false
+
+    index_match(letter, index)
+        if letter == letter_list[index]:
+            return true
+        otherwise: 
+            return false
+
+    get_letter_list():
+        return letter_list
+
+    get_text():
+        return text
+
+CheckedLetter:
+           # an ordered pair of a letter and a status
+    letter # a single letter
+    status # "absent", "present", or "match"
+
+    constructor(l, s):
+        letter = l
+        status = s
+
+
+
+Helpers:
+    dictionary # list of the possible 5 letter words
+
+    constructor():
+        open_dict()
+
+    def open_dict():
+        dictionary = dictionary file contents
+
+    def dict_word():
+        return random index from dictionary
+
+    is_word(text):
+        if text is in dictionary of valid words:
+            return true
+        otherwise:
+            return false
+
+    compare_word(user_word, target_word):
+        # compares user_word and target_word to see what letters are
+        # present in target_word and what letters are direct matches
+        user_word_letters = user_word.get_letter_list
+        word_match = empty list
+        for index from 0 to length(user_word_letters) -1:
+            letter = user_word_letters[index]
+            status = "absent"
+
+            if target_word_letters[index].contains_letter(letter):
+                status = "present"
+                
+                if target_word_letters[index].index_match(letter, index):
+                    status = "match"
+        
+            append CheckedLetter(letter, status) to word_match
+
+        return word_match
+
+
+    output_graphic(word_match):
+        # creates a string that displays the user's guess
+        # with visuals based on each letter's status
+        output_word = empty list
+        for each CheckedLetter in word_match:
+            if checked_letter.status == "absent":
+                append to output_word "CheckedLetter.letter"
+            otherwise if checked_letter.status == "present"
+                append to output_word "(CheckedLetter.letter)"
+            otherwise: # checked_letter.status == "match"
+                append to output_word "[CheckedLetter.letter]"
+
+        output_msg = output_wrd as a joint string
+        return output_msg
+
+    win(word_match):
+        # returns true if all letters are exact matches
+        for each checked_letter in word_match:
+            if checked_letter.status != "match":
+                return false
+        return true
+
